@@ -92,6 +92,8 @@ proof -
   thus ?thesis by auto
 qed
 
+text\<open>Partition related set theory lemmas\<close>
+
 lemma partition_on_remove_pt: 
   assumes "partition_on A G"
   shows "partition_on (A - {x}) {g - {x} | g. g \<in> G \<and> g \<noteq> {x}}"
@@ -264,7 +266,7 @@ lemma size_cartesian_product: "size (A \<times># B) = size A * size B"
    apply auto
   by (metis Sigma_mset_plus_distrib1 add.left_neutral size_cartesian_product_singleton size_union union_mset_add_mset_left)
 
-lemma 
+lemma cart_prod_distinct_mset:
   assumes assm1: "distinct_mset A"
   assumes assm2: "distinct_mset B"
   shows "distinct_mset (A \<times># B)"
@@ -304,72 +306,55 @@ lemma cart_product_add_1_filter2: "{#m \<in># (M \<times># (add_mset b N)) . P m
   unfolding add_mset_add_single [of b N] Sigma_mset_plus_distrib1
   by (metis Times_insert_left Times_mset_single_right add_mset_add_single filter_union_mset)
 
-lemma cart_product_singleton_left: "{#m \<in># ({#a#} \<times>#  N) . fst m \<in> snd m #} = ({#a#} \<times># {# n \<in># N . a \<in> n #})" (is "?A = ?B")
-proof (rule multiset_eqI)
-  fix x
-  show "count ?A x = count ?B x"
-  proof (cases "x \<in># ?A")
-    case True
-    have countA: "count ?A x = count N (snd x)"
-    proof -
-      have "1 = count {#a#} (fst x)"
-        using True by auto
-      then show ?thesis
-        by (metis (no_types) True count_Sigma_mset count_eq_zero_iff filter_mset.rep_eq mult.commute nat_mult_1_right prod.collapse)
-    qed
-    have countB: "count ?B x = count N (snd x)"
-      by (smt True countA add_mset_add_single add_mset_eq_add_mset_ne add_mset_remove_trivial_eq count_Sigma_mset count_eq_zero_iff empty_not_add_mset eq_snd_iff filter_mset.rep_eq fstI mult_cancel_left union_is_single) (* LONG *) 
-    then show ?thesis
-      using countA by auto
-  next
-    case False
-    then have dis:"fst x \<noteq> a \<or> snd x \<notin># N \<or> fst x \<notin> snd x"
-      by (metis (no_types, lifting) Multiset.set_mset_filter mem_Collect_eq mem_Sigma_mset_iff multi_member_last prod.collapse)
-    have f1: "fst x \<noteq> a \<longrightarrow> x \<notin># ?B"
-      by (simp add: mem_Times_mset_iff)
-    have f2: "snd x \<notin># N \<longrightarrow> x \<notin># ?B"
-      by auto 
-    have "fst x \<notin> snd x \<longrightarrow> x \<notin># ?B"  by auto
-    then show ?thesis using dis f1 f2
-      by (metis (no_types, lifting) False count_inI) 
-  qed
+lemma cart_prod_singleton_right_gen: 
+  assumes "\<And> x . x \<in># (A \<times># {#b#}) \<Longrightarrow> P x \<longleftrightarrow> Q (fst x)"
+  shows "{#x \<in># (A \<times># {#b#}). P x#} = {# a \<in># A . Q a#} \<times># {#b#}"
+  using assms
+proof (induction A)
+  case empty
+  then show ?case by simp
+next
+  case (add x A)
+  have "add_mset x A \<times># {#b#} = add_mset (x, b) (A \<times># {#b#})"
+    by (simp add: Times_mset_single_right) 
+  then have lhs: "filter_mset P (add_mset x A \<times># {#b#}) = filter_mset P (A \<times># {#b#}) + filter_mset P {#(x, b)#}" by simp
+  have rhs: "filter_mset Q (add_mset x A) \<times># {#b#} = filter_mset Q A \<times># {#b#} + filter_mset Q {#x#} \<times># {#b#}"
+    by (metis Sigma_mset_plus_distrib1 add_mset_add_single filter_union_mset)
+  have "filter_mset P {#(x, b)#} = filter_mset Q {#x#} \<times># {#b#}"
+    using add.prems by fastforce
+  then show ?case using lhs rhs add.IH add.prems by force 
 qed
 
-(* Simplify these proofs ! *)
+lemma cart_prod_singleton_left_gen: 
+  assumes "\<And> x . x \<in># ({#a#} \<times># B) \<Longrightarrow> P x \<longleftrightarrow> Q (snd x)"
+  shows "{#x \<in># ({#a#} \<times># B). P x#} = {#a#} \<times># {#b \<in># B . Q b#}"
+  using assms
+proof (induction B)
+  case empty
+  then show ?case by simp
+next
+  case (add x B)
+  have lhs: "filter_mset P ({#a#} \<times># add_mset x B) = filter_mset P ({#a#} \<times># B) + filter_mset P {#(a, x)#}"
+    by (simp add: cart_product_add_1_filter2) 
+  have rhs: "{#a#} \<times># filter_mset Q (add_mset x B) = {#a#} \<times># filter_mset Q B + {#a#} \<times># filter_mset Q {#x#}"
+    using add_mset_add_single filter_union_mset by (metis Times_mset_single_left image_mset_union) 
+  have "filter_mset P {#(a, x)#} = {#a#} \<times># filter_mset Q {#x#}"
+    using add.prems by fastforce
+  then show ?case using lhs rhs add.IH add.prems by force 
+qed
+
+lemma cart_product_singleton_left: "{#m \<in># ({#a#} \<times>#  N) . fst m \<in> snd m #} = ({#a#} \<times># {# n \<in># N . a \<in> n #})" (is "?A = ?B")
+proof -
+  have stmt: "\<And>m. m \<in># ({#a#} \<times># N) \<Longrightarrow> fst m \<in> snd m \<longleftrightarrow> a \<in> snd m"
+    by (simp add: mem_Times_mset_iff)
+  thus ?thesis by (metis (no_types, lifting) Sigma_mset_cong stmt cart_prod_singleton_left_gen)
+qed
+
 lemma cart_product_singleton_right: "{#m \<in># (N \<times># {#b#}) . fst m \<in> snd m #} = ({# n \<in># N . n \<in> b #} \<times># {# b #})" (is "?A = ?B")
-proof (rule multiset_eqI)
-  fix x
-  show "count ?A x = count ?B x"
-  proof (cases "x \<in># ?A")
-    case True
-    have countA: "count ?A x = count N (fst x)"
-    proof -
-      have "1 = count {#b#} (snd x)"
-        using True by auto
-      then show ?thesis
-        by (metis (no_types) True count_Sigma_mset count_eq_zero_iff filter_mset.rep_eq mult.commute nat_mult_1_right prod.collapse)
-    qed
-    have countB: "count ?B x = count N (fst x)"
-    proof -
-      have "count {#a \<in># N. a \<in> b#} (fst x) * count {#b#} (snd x) = count ({#a \<in># N. a \<in> b#} \<times># {#b#}) x"
-        by (metis count_Sigma_mset surjective_pairing)
-      then show ?thesis
-        using True by fastforce
-    qed 
-    then show ?thesis
-      using countA by auto
-  next
-    case False
-    then have dis:"snd x \<noteq> b \<or> fst x \<notin># N \<or> fst x \<notin> snd x"
-      by (metis (no_types, lifting) Multiset.set_mset_filter mem_Collect_eq mem_Sigma_mset_iff multi_member_last prod.collapse)
-    have f1: "snd x \<noteq> b \<longrightarrow> x \<notin># ?B"
-      by (simp add: mem_Times_mset_iff)
-    have f2: "fst x \<notin># N \<longrightarrow> x \<notin># ?B"
-      by auto 
-    have "fst x \<notin> snd x \<longrightarrow> x \<notin># ?B"  by auto
-    then show ?thesis using dis f1 f2
-      by (metis (no_types, lifting) False count_inI) 
-  qed
+proof - 
+  have stmt: "\<And>m. m \<in># (N \<times># {#b#}) \<Longrightarrow> fst m \<in> snd m \<longleftrightarrow> fst m \<in>b"
+    by (simp add: mem_Times_mset_iff)
+  thus ?thesis by (metis (no_types, lifting) Sigma_mset_cong stmt cart_prod_singleton_right_gen)
 qed
 
 lemma cart_product_add_1_filter_eq: "{#m \<in># ((add_mset a M) \<times># N) . (fst m \<in> snd m) #} = {#m \<in># (M \<times># N) . (fst m \<in> snd m) #} + ({#a#} \<times># {# n \<in># N . a \<in> n #})"
