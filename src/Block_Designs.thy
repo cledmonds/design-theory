@@ -367,7 +367,8 @@ lemma rep_not_zero: "\<r> \<noteq> 0"
 
 lemma r_gzero: "\<r> > 0"
   using point_replication_number_def rep_number constant_rep_design.rep_not_zero
-  by (metis constant_rep_design.intro constant_rep_design_axioms.intro leI of_nat_less_0_iff proper_design_axioms verit_la_disequality) 
+  by (metis constant_rep_design.intro constant_rep_design_axioms.intro leI of_nat_less_0_iff 
+      proper_design_axioms verit_la_disequality) 
 
 lemma r_lt_eq_b: "\<r> \<le> \<b>"
   using rep_number max_point_rep

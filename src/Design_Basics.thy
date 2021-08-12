@@ -2,7 +2,8 @@ theory Design_Basics imports Main Multisets_Extras "HOL-Library.Disjoint_Sets"
 begin
 
 section \<open> Design Theory Basics\<close>
-text \<open> All definitions in this section reference the handbook of combinatorial designs CITE\<close>
+text \<open> All definitions in this section reference the handbook of combinatorial designs
+ \cite{colbournHandbookCombinatorialDesigns2007}\<close>
 
 subsection \<open> Initial setup \<close>
 
@@ -613,12 +614,14 @@ lemma (in design) complement_design:
   shows "design \<V> (\<B>\<^sup>C)"
 proof -
   interpret fin: finite_incidence_system \<V> "\<B>\<^sup>C" using complement_finite by simp
-  show ?thesis using assms block_comp_incomplete_nempty wellformed by (unfold_locales) (auto simp add: complement_blocks_def)
+  show ?thesis using assms block_comp_incomplete_nempty wellformed 
+    by (unfold_locales) (auto simp add: complement_blocks_def)
 qed
 
 end
 subsubsection \<open>Multiples\<close>
-text \<open>An easy way to construct new set systems is to simply multiply the block collection by some constant \<close>
+text \<open>An easy way to construct new set systems is to simply multiply the block collection by some 
+constant \<close>
 
 context incidence_system 
 begin

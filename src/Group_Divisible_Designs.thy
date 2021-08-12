@@ -3,7 +3,8 @@
 *)
 
 section \<open>Group Divisible Designs\<close>
-
+text \<open>Definitions in this section taken from the handbook \cite{colbournHandbookCombinatorialDesigns2007}
+and Stinson \cite{stinsonCombinatorialDesignsConstructions2004} \<close>
 theory Group_Divisible_Designs imports Resolvable_Designs
 begin
 
@@ -405,7 +406,10 @@ locale RGDD = GDD + resolvable_design
 subsection \<open> GDD and PBD Constructions \<close>
 text \<open> GDD's are commonly studied alongside PBD's (pairwise balanced designs). Many constructions
 have been developed for designs to create a GDD from a PBD and vice versa. In particular, 
-Wilsons Construction is a well known construction, which is formalised in this section\<close>
+Wilsons Construction is a well known construction, which is formalised in this section. It
+should be noted that many of the more basic constructions in this section are often stated without
+proof/all the necessary assumptions in textbooks/course notes.\<close>
+
 context GDD
 begin
 
@@ -672,7 +676,7 @@ qed
 
 subsubsection \<open>Wilson's Construction\<close>
 text \<open>Wilson's construction involves the combination of multiple k-GDD's. This proof was
-based of ... CITE \<close>
+based of Stinson \cite{stinsonCombinatorialDesignsConstructions2004}\<close>
 
 lemma wilsons_construction_proper: 
   assumes "card I = w"

@@ -7,6 +7,7 @@ imports
   Multisets_Extras
 
   Design_Basics
+  Design_Operations
   Block_Designs
   BIBD
 
