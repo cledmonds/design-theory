@@ -1,3 +1,7 @@
+(* Title: Triple_System.thy
+   Author: Chelsea Edmonds
+*)
+
 theory Triple_Systems imports Resolvable_Designs
 begin
 
