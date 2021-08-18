@@ -42,3 +42,11 @@ Some familiarity with Isabelle is recommended for working with this repository. 
 
 ### Suggestions
 Feel free to reach out if you have any suggestions/feedback!
+
+### Updates
+Major update merged into main branch as of 18/08/2021. This version has been submitted to the Isabelle AFP. The main changes in this update include: 
+- Shifting operations on designs (adding/deleting points, combining designs etc) to seperate file
+- Using a more locale centric approach for reasoning on operations (e.g. a locale for combining designs).
+- Documentation Improvements
+- General tidying of proofs to match Isabelle best practices/simplify proofs/generalise some lemmas
+- Notation Updates. Adding new notation to more closely mirror the literature on designs and make proofs easier to read
