@@ -205,7 +205,7 @@ lemma add_block_index_not_in: "\<not> (ps \<subseteq> b) \<Longrightarrow> (add_
 
 text \<open> Note the add block incidence system is defined slightly differently then textbook 
 definitions due to the modification to the point set. This ensures the operation is closed, 
-where otherwise a condition that $b \<subseteq> \<V>$ would be required. \<close>
+where otherwise a condition that $b \subseteq \mathcal{V}$ would be required. \<close>
 lemma add_block_wf: "incidence_system (\<V> \<union> b) (add_block b)"
   using wellformed add_block_def by (unfold_locales) auto
 

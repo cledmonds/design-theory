@@ -47,7 +47,7 @@ lemma wf_invalid_point: "x \<notin> \<V> \<Longrightarrow> b \<in># \<B> \<Longr
 lemma block_set_nempty_imp_block_ex: "\<B> \<noteq> {#} \<Longrightarrow> \<exists> bl . bl \<in># \<B>"
   by auto
 
-text \<open>Abbreviations for all incidence_systems \<close>
+text \<open>Abbreviations for all incidence systems \<close>
 abbreviation multiplicity :: "'a set \<Rightarrow> nat" where
 "multiplicity b \<equiv> count \<B> b"
 

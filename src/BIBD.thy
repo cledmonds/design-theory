@@ -47,7 +47,7 @@ subsection \<open>Necessary Conditions for Existence\<close>
 
 text \<open>The necessary conditions on the existence of a $(v, k, \lambda)$-bibd are one of the 
 fundamental first theorems on designs. Proofs based off MATH3301 lecture notes \cite{HerkeLectureNotes2016}
- & Stinson \cite{stinsonCombinatorialDesignsConstructions2004} \<close>
+ and Stinson \cite{stinsonCombinatorialDesignsConstructions2004} \<close>
 
 lemma necess_cond_1_rhs: 
   assumes "x \<in> \<V>"
