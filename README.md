@@ -50,3 +50,5 @@ Major update merged into main branch as of 18/08/2021. This version has been sub
 - Documentation Improvements
 - General tidying of proofs to match Isabelle best practices/simplify proofs/generalise some lemmas
 - Notation Updates. Adding new notation to more closely mirror the literature on designs and make proofs easier to read
+
+10/12/2021 Update: Changed design paramaters to be nat's instead of ints. While ints did make some algebraic manipulation proofs a little cleaner, this design choice was having unintended consequences from an automation support standpoint in new developments relying on this one. 
