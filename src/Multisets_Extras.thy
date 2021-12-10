@@ -178,6 +178,16 @@ lemma set_count_size_min: "count A a \<ge> n \<Longrightarrow> size A \<ge> n"
 lemma card_size_filter_eq: "finite A \<Longrightarrow>  card {a \<in> A . P a} = size {#a \<in># mset_set A . P a#}"
   by simp
 
+lemma size_multiset_set_mset_const_count:
+  assumes "card (set_mset A) = ca"
+  assumes "\<And>p. p \<in># A \<Longrightarrow> count A p = ca2"
+  shows "size A =  (ca * ca2)"
+proof -
+  have "size A = (\<Sum> p \<in> (set_mset A) . count A p)" using size_multiset_overloaded_eq by auto
+  then have "size A = (\<Sum> p \<in> (set_mset A) . ca2)" using assms by simp
+  thus ?thesis using assms(1) by auto 
+qed
+
 lemma size_multiset_int_count:
   assumes "of_nat (card (set_mset A)) = (ca :: int)"
   assumes "\<And>p. p \<in># A \<Longrightarrow> of_nat (count A p) = (ca2 :: int)"
@@ -187,6 +197,8 @@ proof -
   then have "of_nat (size A) = (\<Sum> p \<in> (set_mset A) . ca2)" using assms by simp
   thus ?thesis using assms(1) by auto 
 qed
+
+
 
 lemma mset_union_size: "size (A \<union># B) = size (A) + size (B - A)"
   by (simp add: sup_subset_mset_def) 
@@ -435,15 +447,19 @@ lemma sum_over_fun_eq:
   shows "(\<Sum>x \<in># A . f(x)) = (\<Sum> x \<in># A . g (x))"
   using assms by auto
 
-context ring_1
-begin
+lemma sum_mset_add_diff: 
+  fixes x:: 'a and  f g :: "'a \<Rightarrow> nat"
+  assumes "\<And>x . x \<in># A \<Longrightarrow> f x \<ge> g x"
+  shows "(\<Sum> x \<in># A. f x - g x) = (\<Sum> x \<in># A . f x) -  (\<Sum> x \<in># A . g x)"
+  using assms apply (induction A) 
+  by (simp_all add: sum_mset_mono)
 
-lemma sum_mset_add_diff: "(\<Sum> x \<in># A. f x - g x) = (\<Sum> x \<in># A . f x) -  (\<Sum> x \<in># A . g x)"
-  by (induction A) (auto simp add: algebra_simps)
+lemma sum_mset_add_diff_int: 
+  fixes x:: 'a and  f g :: "'a \<Rightarrow> int"
+  shows "(\<Sum> x \<in># A. f x - g x) = (\<Sum> x \<in># A . f x) -  (\<Sum> x \<in># A . g x)"
+  by (induction A) (simp_all add: sum_mset_mono)
 
-end
-
-context ordered_ring
+context ordered_semiring
 begin
 
 lemma sum_mset_ge0:"(\<And> x . f x \<ge> 0) \<Longrightarrow> (\<Sum> x \<in># A. f x ) \<ge> 0"
@@ -460,7 +476,7 @@ next
 qed
 
 lemma sum_order_add_mset: "(\<And> x . f x \<ge> 0) \<Longrightarrow> (\<Sum> x \<in># A. f x ) \<le> (\<Sum> x \<in># add_mset a A. f x )"
-  by simp
+  by (simp add: local.add_increasing)
 
 lemma sum_mset_0_left: "(\<And> x . f x \<ge> 0) \<Longrightarrow> (\<Sum> x \<in># A. f x ) = 0 \<Longrightarrow> (\<forall> x \<in># A .f x = 0)"
   apply (induction A)
