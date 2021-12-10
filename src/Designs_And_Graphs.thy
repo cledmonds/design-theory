@@ -276,7 +276,7 @@ qed
 end
 
 text \<open> A regular digraph is defined as one where the in degree equals the out degree which in turn 
-equals some fixed integer $\<r>$\<close>
+equals some fixed integer $\mathrm{r}$\<close>
 locale regular_digraph = wf_digraph + 
   fixes \<r> :: int
   assumes in_deg_r: "v \<in> verts G \<Longrightarrow> in_degree G v = \<r>"

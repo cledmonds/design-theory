@@ -13,8 +13,8 @@ subsection \<open>Block Designs\<close>
 text \<open>A block design is a design where all blocks have the same size.\<close>
 
 subsubsection \<open>K Block Designs \<close> 
-text \<open>An important generalisation of a typical block design is the $K$ block design, 
-where all blocks must have a size $x$ where $x \<in> K$\<close>
+text \<open>An important generalisation of a typical block design is the $\mathcal{K}$ block design, 
+where all blocks must have a size $x$ where $x \in \mathcal{K}$\<close>
 locale K_block_design = proper_design +
   fixes sizes :: "int set" ("\<K>")
   assumes block_sizes: "bl \<in># \<B> \<Longrightarrow> (int (card bl)) \<in> \<K>"
